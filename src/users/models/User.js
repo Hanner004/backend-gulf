@@ -7,7 +7,7 @@ const userSchema = Schema(
       required: true,
     },
     numDoc: {
-      type: Number,
+      type: String,
       required: true,
     },
     name: {

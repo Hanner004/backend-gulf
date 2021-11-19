@@ -12,7 +12,7 @@ validateRegister = [
     .not()
     .isEmpty()
     .withMessage("El número de documento es requerido")
-    .isInt()
+    .isAlphanumeric()
     .withMessage("El número de documento no es válido"),
 
   body("name")
@@ -44,6 +44,21 @@ validateRegister = [
     .withMessage("La longitud de la contraseña debe ser superior o igual a 5"),
 ];
 
+validateLogin = [
+  body("email")
+    .not()
+    .isEmpty()
+    .withMessage("El correo electrónico es requerido")
+    .isEmail()
+    .withMessage("El correo electrónico no es válido"),
+
+  body("password")
+    .not()
+    .isEmpty()
+    .withMessage("La contraseña es requerida"),
+];
+
 module.exports = {
   validateRegister,
+  validateLogin,
 };
