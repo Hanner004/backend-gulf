@@ -7,6 +7,12 @@ Equipo 9 - Misión TIC
 Sistema de gestión de gasolina
 ```
 
+## .env
+
+```
+URL = mongodb://localhost/gulf
+```
+
 ## Installation
 
 ```
