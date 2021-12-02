@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const { hash } = require("../exports/shared/encryptPassword");
+const { external } = require("../exports/shared/roles");
 const User = require("./models/User");
 
 exports.create = async (req, res) => {
@@ -90,6 +91,36 @@ exports.remove = async (req, res) => {
       return res.status(404).json({
         errors: [{ msg: "El usuario no se encuentra registrado" }],
       });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      errors: [{ msg: "El parametro _id es inválido" }],
+    });
+  }
+};
+
+exports.status = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    } else {
+      const { _id } = req.params;
+      const user = await User.findById({ _id });
+      if (user && user.role === external) {
+        await User.updateOne(user, { $set: { status: req.body.status } });
+        return res.status(200).json({
+          msg: "Datos actualizados",
+        });
+      } else {
+        return res.status(404).json({
+          errors: [
+            {
+              msg: "El usuario no se encuentra registrado o no tiene el rol de usuario externo",
+            },
+          ],
+        });
+      }
     }
   } catch (error) {
     return res.status(400).json({

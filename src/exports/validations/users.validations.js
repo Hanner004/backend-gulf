@@ -102,7 +102,17 @@ validateUpdate = [
     .withMessage("El rol es incorrecto"),
 ];
 
+validateStatus = [
+  body("status")
+    .not()
+    .isEmpty()
+    .withMessage("El estado es requerido")
+    .isIn(["true", "false"])
+    .withMessage("El estado es incorrecto"),
+]
+
 module.exports = {
   validateCreate,
   validateUpdate,
+  validateStatus
 };
