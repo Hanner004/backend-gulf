@@ -30,6 +30,10 @@ const userSchema = Schema(
       type: Boolean,
       default: true,
     },
+    role: {
+      type: String,
+      require: true,
+    },
   },
   {
     timestamps: true,
