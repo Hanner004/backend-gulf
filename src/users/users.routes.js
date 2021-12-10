@@ -17,9 +17,9 @@ const router = Router();
 
 router.post("/users", validateCreate, create);
 router.get("/users", findAll);
-router.get("/users/:_id", findOne);
-router.put("/users/:_id", validateUpdate, update);
-router.delete("/users/:_id", remove);
-router.put("/users/:_id/status",validateStatus, status);
+router.get("/users/:id", findOne);
+router.put("/users/:id", validateUpdate, update);
+router.delete("/users/:id", remove);
+router.put("/users/:id/status", validateStatus, status);
 
 module.exports = router;
