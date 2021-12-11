@@ -20,14 +20,24 @@ const router = Router();
  * @swagger
  * components:
  *  schemas:
+ *    Status:
+ *      type: object
+ *      properties:
+ *        status:
+ *          type: boolean
+ *      required:
+ *          - status
+ *
  *    User:
  *      type: object
  *      properties:
  *        name:
  *          type: string
+ *        lastname:
+ *          type: string
  *      required:
  *        - name
- *
+ *        - lastname
  */
 
 /**
@@ -35,7 +45,7 @@ const router = Router();
  * /api/users:
  *  post:
  *    summary: Crear usuario
- *    tags: [User]
+ *    tags: [Users]
  *    requestBody:
  *      required: true
  *      content:
@@ -54,7 +64,7 @@ router.post("/", isAuth, validateCreate, create);
  * /api/users:
  *  get:
  *    summary: Consultar a todos los usuarios
- *    tags: [User]
+ *    tags: [Users]
  *    responses:
  *      200:
  *        description: Usuarios
@@ -72,7 +82,7 @@ router.get("/", isAuth, findAll);
  * /api/users/{id}:
  *  get:
  *    summary: Consultar datos del usuario
- *    tags: [User]
+ *    tags: [Users]
  *    parameters:
  *      - in: path
  *        name: id
@@ -87,14 +97,79 @@ router.get("/", isAuth, findAll);
  *         application/json:
  *           schema:
  *             type: object
- *             ref: '#/components/schemas/User'
+ *             $ref: '#/components/schemas/User'
  */
 router.get("/:id", isAuth, findOne);
 
+/**
+ * @swagger
+ * /api/users/{id}:
+ *  put:
+ *    summary: Actualizar datos del usuario
+ *    tags: [Users]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: ID
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            $ref: '#/components/schemas/User'
+ *    responses:
+ *     200:
+ *       description: Usuario actualizado
+ */
 router.put("/:id", isAuth, validateUpdate, update);
 
+/**
+ * @swagger
+ * /api/users/{id}:
+ *  delete:
+ *    summary: Eliminar usuario
+ *    tags: [Users]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: ID
+ *    responses:
+ *     200:
+ *       description: Usuario eliminado
+ */
 router.delete("/:id", isAuth, remove);
 
+/**
+ * @swagger
+ * /api/users/{id}/status:
+ *  put:
+ *    summary: Activar o desactivar usuarios
+ *    tags: [Users]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: ID
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            $ref: '#/components/schemas/Status'
+ *    responses:
+ *     200:
+ *       description: Usuario activado/desactivado
+ */
 router.put("/:id/status", isAuth, validateStatus, status);
 
 module.exports = router;
