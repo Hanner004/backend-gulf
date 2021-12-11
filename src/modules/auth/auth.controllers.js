@@ -1,8 +1,9 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-const { hash } = require("../exports/shared/encryptPassword");
-const { ext } = require("../exports/shared/role");
+const signToken = require("../../exports/shared/signToken");
 const User = require("../users/models/User");
+const { hash } = require("../../exports/shared/encryptPassword");
+const { ext } = require("../../exports/shared/role");
 
 exports.register = async (req, res) => {
   const errors = validationResult(req);
@@ -41,6 +42,7 @@ exports.login = async (req, res) => {
         return res.status(200).json({
           msg: "Usuario conectado",
           data: user,
+          token: await signToken(user._id),
         });
       } else {
         return res.status(400).json({

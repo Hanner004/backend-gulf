@@ -1,7 +1,7 @@
 const { validationResult } = require("express-validator");
-const { hash } = require("../exports/shared/encryptPassword");
-const { ext } = require("../exports/shared/role");
 const User = require("./models/User");
+const { hash } = require("../../exports/shared/encryptPassword");
+const { ext } = require("../../exports/shared/role");
 
 exports.create = async (req, res) => {
   const errors = validationResult(req);
