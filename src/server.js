@@ -1,5 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
+
+//swagger config
+const swaggerUI = require("swagger-ui-express");
+const swaggerDoc = require("swagger-jsdoc");
+const swaggerSpec = require("./config/swagger.json");
 
 //init
 const app = express();
@@ -11,8 +17,11 @@ app.set("port", process.env.PORT || 3000);
 app.use(express.json());
 app.use(cors());
 
+//swagger
+app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc(swaggerSpec)));
+
 //routes
-app.use(require("./modules/auth/auth.routes"));
-app.use(require("./modules/users/users.routes"));
+app.use("/api/auth", require("./modules/auth/auth.routes"));
+app.use("/api/users", require("./modules/users/users.routes"));
 
 module.exports = app;

@@ -16,11 +16,11 @@ const {
 
 const router = Router();
 
-router.post("/users", isAuth, validateCreate, create);
-router.get("/users", isAuth, findAll);
-router.get("/users/:id", isAuth, findOne);
-router.put("/users/:id", isAuth, validateUpdate, update);
-router.delete("/users/:id", isAuth, remove);
-router.put("/users/:id/status", isAuth, validateStatus, status);
+router.post("/", isAuth, validateCreate, create);
+router.get("/", isAuth, findAll);
+router.get("/:id", isAuth, findOne);
+router.put("/:id", isAuth, validateUpdate, update);
+router.delete("/:id", isAuth, remove);
+router.put("/:id/status", isAuth, validateStatus, status);
 
 module.exports = router;
