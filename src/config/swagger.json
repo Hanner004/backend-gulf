@@ -5,11 +5,12 @@
       "title": "API GULF",
       "version": "1.0.0"
     },
+    "basePath": "/api",
     "servers": [
       {
         "url": "http://localhost:3000"
       }
     ]
   },
-  "apis": ["./modules/users/users.routes.js"]
+  "apis": ["**/*.routes.js"]
 }
