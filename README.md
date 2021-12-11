@@ -13,10 +13,14 @@ Sistema de gestión de gasolina
 URL = mongodb://localhost/gulf
 ```
 
-## Installation
+## Ejecutando la aplicación
 
-```
+```bash
+# development
+$ npm run dev
 
+# production mode
+$ npm start
 ```
 
 ## Documentation
