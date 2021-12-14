@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const Wallet = require("./Wallet").schema;
 
 const userSchema = Schema(
   {
@@ -26,6 +27,10 @@ const userSchema = Schema(
       type: String,
       required: true,
     },
+    phone: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: Boolean,
       default: true,
@@ -34,10 +39,10 @@ const userSchema = Schema(
       type: String,
       require: true,
     },
+    wallet: Wallet,
   },
   {
     timestamps: true,
-    versionKey: false,
   }
 );
 

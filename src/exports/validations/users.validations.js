@@ -6,7 +6,9 @@ validateCreate = [
     .isEmpty()
     .withMessage("El tipo de documento es requerido")
     .isString()
-    .withMessage("El tipo de documento no es válido"),
+    .withMessage("El tipo de documento no es válido")
+    .isIn(["CC", "TI", "CE"])
+    .withMessage("El tipo de documento es incorrecto"),
 
   body("numDoc")
     .not()
@@ -42,6 +44,13 @@ validateCreate = [
     .withMessage("La contraseña es requerida")
     .isLength({ min: 5 })
     .withMessage("La longitud de la contraseña debe ser superior o igual a 5"),
+
+  body("phone")
+    .not()
+    .isEmpty()
+    .withMessage("El teléfono es requerido")
+    .isNumeric()
+    .withMessage("El teléfono no es válido"),
 
   body("role")
     .not()
@@ -87,19 +96,12 @@ validateUpdate = [
     .isEmail()
     .withMessage("El correo electrónico no es válido"),
 
-  body("password")
+  body("phone")
     .not()
     .isEmpty()
-    .withMessage("La contraseña es requerida")
-    .isLength({ min: 5 })
-    .withMessage("La longitud de la contraseña debe ser superior o igual a 5"),
-
-  body("role")
-    .not()
-    .isEmpty()
-    .withMessage("El rol es requerido")
-    .isIn(["ext", "int", "admin"])
-    .withMessage("El rol es incorrecto"),
+    .withMessage("El teléfono es requerido")
+    .isNumeric()
+    .withMessage("El teléfono no es válido"),
 ];
 
 validateStatus = [
@@ -109,10 +111,20 @@ validateStatus = [
     .withMessage("El estado es requerido")
     .isIn(["true", "false"])
     .withMessage("El estado es incorrecto"),
-]
+];
+
+validateRecharge = [
+  body("money")
+    .not()
+    .isEmpty()
+    .withMessage("El dinero es requerido")
+    .isNumeric()
+    .withMessage("El dinero no es válido"),
+];
 
 module.exports = {
   validateCreate,
   validateUpdate,
-  validateStatus
+  validateStatus,
+  validateRecharge,
 };

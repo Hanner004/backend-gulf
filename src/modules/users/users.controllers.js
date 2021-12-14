@@ -18,6 +18,9 @@ exports.create = async (req, res) => {
       const newUser = new User(req.body);
       newUser.password = await hash(password);
       newUser.role = role;
+      newUser.wallet = {
+        money: 0,
+      };
       await newUser.save();
       return res.status(201).json({
         msg: "Usuario registrado",
@@ -63,13 +66,11 @@ exports.update = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     } else {
       const { id } = req.params;
-      const { password } = req.body;
       const user = await User.findById({ _id: id });
       if (user) {
-        req.body.password = await hash(password);
         await User.updateOne({ _id: id }, { $set: req.body });
         return res.status(200).json({
-          msg: "Usuario actualizado",
+          msg: "Datos actualizado",
           data: req.body,
         });
       } else {
@@ -135,6 +136,37 @@ exports.status = async (req, res) => {
       }
     }
   } catch (error) {
+    return res.status(400).json({
+      errors: [{ msg: "El parametro _id es inválido" }],
+    });
+  }
+};
+
+exports.recharge = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    } else {
+      const _id = req.params.id;
+      const user = await User.findById({ _id });
+      if (user) {
+        user.wallet.history.push({
+          action: "Recarga de saldo",
+          value: req.body.money,
+        });
+        await user.save();
+        return res.status(200).json({
+          msg: "La recarga de saldo se realizó correctamente",
+        });
+      } else {
+        return res.status(404).json({
+          errors: [{ msg: "El usuario no se encuentra registrado" }],
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
     return res.status(400).json({
       errors: [{ msg: "El parametro _id es inválido" }],
     });

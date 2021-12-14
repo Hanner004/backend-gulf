@@ -20,6 +20,9 @@ exports.register = async (req, res) => {
       const newUser = new User(req.body);
       newUser.password = await hash(password);
       newUser.role = ext;
+      newUser.wallet = {
+        money: 0,
+      };
       await newUser.save();
       return res.status(201).json({
         msg: "Usuario registrado",
