@@ -151,6 +151,14 @@ exports.recharge = async (req, res) => {
       const _id = req.params.id;
       const user = await User.findById({ _id });
       if (user) {
+        await User.findByIdAndUpdate(
+          { _id },
+          {
+            $set: {
+              "wallet.money": req.body.money,
+            },
+          }
+        );
         user.wallet.history.push({
           action: "Recarga de saldo",
           value: req.body.money,
@@ -166,7 +174,6 @@ exports.recharge = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error);
     return res.status(400).json({
       errors: [{ msg: "El parametro _id es inválido" }],
     });
