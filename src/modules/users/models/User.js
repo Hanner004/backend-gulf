@@ -40,6 +40,7 @@ const userSchema = Schema(
       require: true,
     },
     wallet: Wallet,
+    vehicles_id: [],
   },
   {
     timestamps: true,
