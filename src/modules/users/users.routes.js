@@ -1,37 +1,32 @@
 const { Router } = require("express");
+
 const isAuth = require("../../middlewares/isAuth");
+
 const {
   validateCreate,
   validateUpdate,
   validateStatus,
   validateRecharge,
-  validateCreateVehicle,
 } = require("../../exports/validations/users.validations");
+
 const {
-  create,
-  findAll,
-  findOne,
-  update,
-  remove,
-  status,
-  recharge,
-  findUserVehicles,
-  createVehicle,
-  updateVehicle,
-  removeVehicle,
+  createUser,
+  getUsers,
+  getUser,
+  updateUser,
+  removeUser,
+  statusUser,
+  rechargeUser,
 } = require("./users.controllers");
 
 const router = Router();
 
-router.post("/", isAuth, validateCreate, create); //crear usuarios
-router.get("/", isAuth, findAll); //consultar usuarios
-router.get("/:id", isAuth, findOne); //consultar usuario por id
-router.put("/:id", isAuth, validateUpdate, update); //actualizar usuario por id
-router.delete("/:id", isAuth, remove); //eliminar usuario por id
-router.put("/:id/status", isAuth, validateStatus, status); //actualizar estado del usuario por id
-router.post("/:id/wallet", isAuth, validateRecharge, recharge); //recargar saldo
-router.get("/:id/vehicles", isAuth, findUserVehicles); //consultar vehículos del usuario
-router.post("/:id/vehicles", isAuth, validateCreateVehicle, createVehicle); //crear vehículo
-router.put("/:id/vehicles/:idVehicle", isAuth, validateCreateVehicle, updateVehicle); //editar vehículo
-router.delete("/:id/vehicles/:idVehicle", isAuth, removeVehicle); //eliminar vehículo
+router.post("/", isAuth, validateCreate, createUser); //crear usuarios
+router.get("/", isAuth, getUsers); //consultar usuarios
+router.get("/:idUser", isAuth, getUser); //consultar usuario por id
+router.put("/:idUser", isAuth, validateUpdate, updateUser); //actualizar usuario por id
+router.delete("/:idUser", isAuth, removeUser); //eliminar usuario por id
+router.put("/:idUser/status", isAuth, validateStatus, statusUser); //actualizar estado del usuario por id
+router.post("/:idUser/wallet", isAuth, validateRecharge, rechargeUser); //recargar saldo
+
 module.exports = router;

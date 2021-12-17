@@ -21,4 +21,4 @@ const vehicleSchema = Schema(
   }
 );
 
-module.exports = model("Vehicle", vehicleSchema, "Vehicle");
+module.exports = model("Vehicles", vehicleSchema, "Vehicles");

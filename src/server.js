@@ -22,5 +22,6 @@ app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc(swaggerSpec)));
 //routes
 app.use("/api/auth", require("./modules/auth/auth.routes"));
 app.use("/api/users", require("./modules/users/users.routes"));
+app.use("/api/vehicles", require("./modules/vehicles/vehicles.routes"));
 
 module.exports = app;

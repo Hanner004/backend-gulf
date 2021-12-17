@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-const Wallet = require("./Wallet").schema;
 
 const userSchema = Schema(
   {
@@ -39,7 +38,13 @@ const userSchema = Schema(
       type: String,
       require: true,
     },
-    wallet: Wallet,
+    wallet: {
+      money: {
+        type: Number,
+        default: 0,
+      },
+      history: [],
+    },
     vehicles_id: [],
   },
   {
