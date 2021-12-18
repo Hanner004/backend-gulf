@@ -65,11 +65,19 @@ exports.updateUser = async (req, res) => {
       const { idUser } = req.params;
       const user = await User.findById({ _id: idUser });
       if (user) {
-        await User.updateOne({ _id: idUser }, { $set: req.body });
-        return res.status(200).json({
-          msg: "Datos actualizado",
-          data: req.body,
-        });
+        const { email } = req.body;
+        const validate = await User.findOne({ email });
+        if (validate && user.email != email) {
+          return res.status(400).json({
+            errors: [{ msg: "El usuario se encuentra registrado" }],
+          });
+        } else {
+          await User.updateOne({ _id: idUser }, { $set: req.body });
+          return res.status(200).json({
+            msg: "Datos actualizado",
+            data: req.body,
+          });
+        }
       } else {
         return res.status(404).json({
           errors: [{ msg: "El usuario no se encuentra registrado" }],
