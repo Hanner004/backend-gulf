@@ -159,7 +159,7 @@ exports.rechargeUser = async (req, res) => {
         await User.findByIdAndUpdate(
           { _id: idUser },
           {
-            $set: {
+            $inc: {
               "wallet.money": req.body.money,
             },
           }
