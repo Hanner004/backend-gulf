@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator");
 const Gasoline = require("./models/Gasoline");
-const Prices = require("./models/Prices")
+const Prices = require("../price/models/Prices")
 
 exports.addTypeGasoline = async (req, res) => {
   const errors = validationResult(req);
@@ -24,6 +24,17 @@ exports.addTypeGasoline = async (req, res) => {
   }
 };
 
+getPricesNow = async (date) => {
+  return await Prices.findOne(
+    { $and:
+      [
+        {"initialDate" : {$lte : date}},
+        {"endDate" : {$gte : date}}
+      ]
+    }
+  );
+};
+
 exports.getAllGasoline = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -31,6 +42,13 @@ exports.getAllGasoline = async (req, res) => {
   } else {
     const gasoline = await Gasoline.find();
     if (gasoline) {
+      const price = await getPricesNow(Date(Date.now()));
+      gasoline.map((gasol) => { 
+        if (gasol.type === "Corriente" && price){
+          gasol.price = price.amountCurrent;
+        } else if (gasol.type === "Extra" && price)
+          gasol.price = price.amountExtra;
+      })
       return res.status(200).json({
         msg: "Gasolinas",
         data: gasoline,
@@ -51,6 +69,11 @@ exports.getGasolineByType = async (req, res) => {
     const { type } = req.params;
     const gasoline = await Gasoline.findOne({ type });
     if (gasoline) {
+      const price = await getPricesNow(Date(Date.now()));
+      if (gasoline.type === "Corriente" && price){
+        gasoline.price = price.amountCurrent;
+      } else if (gasoline.type === "Extra" && price)
+        gasoline.price = price.amountExtra;
       return res.status(200).json({
         msg: "Gasolina",
         data: gasoline,
@@ -87,8 +110,8 @@ exports.updateStockGasoline = async (req, res) => {
           msg: "Se realizó la actualización de la cantidad y estado de la gasolina",
         });
       } else {
-        return res.status(200).json({
-          msg: "Operación no autorizada",
+        return res.status(400).json({
+          errors: [{ msg: "Operación no autorizada" }]
         });
       };
     } 
@@ -116,36 +139,4 @@ updateStatusGasoline = async (type) => {
       }
     }
   ); 
-}
-
-//EStoy trabajando en la gestion de fechas 
-exports.addSalePriceGasoline = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  } else {
-    const { type, initialDate, endDate, amount } = req.body;
-    const gasoline = await Gasoline.findOne({ type });
-    if (gasoline) {
-      await Gasoline.updateOne(
-        { type },
-        {
-          $addToSet : {
-            "prices": {
-              "initialDate": initialDate,
-              "endDate": endDate,
-              "amount": amount,
-            }
-          }
-        }
-      );
-      return res.status(200).json({
-        msg: "Se guardó el registro del rango y precio de venta",
-      });
-    } else {
-      return res.status(200).json({
-        msg: "Operación no autorizada",
-      });
-    } 
-  }
 };
