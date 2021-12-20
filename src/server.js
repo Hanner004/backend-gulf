@@ -24,5 +24,6 @@ app.use("/api/auth", require("./modules/auth/auth.routes"));
 app.use("/api/users", require("./modules/users/users.routes"));
 app.use("/api/vehicles", require("./modules/vehicles/vehicles.routes"));
 app.use("/api/gasoline", require("./modules/gasoline/gasoline.routes"));
+app.use("/api/price", require("./modules/price/price.routes"));
 
 module.exports = app;

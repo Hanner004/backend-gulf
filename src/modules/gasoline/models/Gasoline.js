@@ -14,22 +14,10 @@ const gasolineSchema = Schema(
       type: Boolean,
       default: false,
     },
-    prices: [
-      {
-        initialDate: {
-          type: Date,
-          default: Date.now(),
-        },
-        endDate: {
-          type: Date,
-          default: Date.now(),
-        },
-        amount: {
-          type: Number,
-          default: 0,
-        },
-      }
-    ]
+    price: {
+      type: Number,
+      default: 0,
+    }
   },
   {
     timestamps: true,
