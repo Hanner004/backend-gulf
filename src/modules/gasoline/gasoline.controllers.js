@@ -127,7 +127,7 @@ updateStatusGasoline = async (type) => {
   const gasoline = await Gasoline.findOne({ type });
   var status;
   if (gasoline.stock <= 0) {
-    status = false;
+    status = "Agotado";
   } else {
     status = true;
   }
@@ -135,7 +135,7 @@ updateStatusGasoline = async (type) => {
     { type },
     {
       $set : {
-        "status": status,
+        "status": "Disponible",
       }
     }
   ); 

@@ -11,8 +11,8 @@ const gasolineSchema = Schema(
       default: 0,
     },
     status: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: "Agotado",
     },
     price: {
       type: Number,
