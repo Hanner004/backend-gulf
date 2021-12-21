@@ -64,6 +64,30 @@ exports.getVehicles = async (req, res) => {
   }
 };
 
+exports.getVehiclesByNumDoc = async (req, res) => {
+  try {
+    const { numDoc } = req.params;
+    const user = await User.findOne({ numDoc });
+    if (user) {
+      const vehicles = await Vehicle.find({
+        numDoc: { $in: user["vehicles_id"] },
+      });
+      return res.status(200).json({
+        msg: "Vehículos de " + user.name,
+        data: vehicles,
+      });
+    } else {
+      return res.status(404).json({
+        errors: [{ msg: "El usuario no se encuentra registrado" }],
+      });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      errors: [{ msg: "El parametro _id es inválido" }],
+    });
+  }
+};
+
 exports.updateVehicle = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -71,7 +95,7 @@ exports.updateVehicle = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     } else {
       const { idUser, idVehicle } = req.params;
-      const {placa} = req.body
+      const { placa } = req.body;
       const user = await User.findById({ _id: idUser });
       if (user) {
         const vehicle = await Vehicle.findById({ _id: idVehicle });
@@ -134,6 +158,34 @@ exports.removeVehicle = async (req, res) => {
       });
     }
   } catch (error) {
+    return res.status(400).json({
+      errors: [{ msg: "El parametro _id es inválido" }],
+    });
+  }
+};
+
+exports.tankVehicle = async (req, res) => {
+  try {
+    const { idVehicle } = req.params;
+    const { type, gallons } = req.body;
+    const vehicle = await Vehicle.findById({ _id: idVehicle });
+    if (vehicle) {
+      vehicle.tank = {
+        type,
+        gallons,
+      };
+      await vehicle.save();
+      return res.status(200).json({
+        msg: "Vehículo tanqueado",
+        data: vehicle,
+      });
+    } else {
+      return res.status(404).json({
+        errors: [{ msg: "El vehículo no se encuentra registrado" }],
+      });
+    }
+  } catch (error) {
+    console.log(error);
     return res.status(400).json({
       errors: [{ msg: "El parametro _id es inválido" }],
     });

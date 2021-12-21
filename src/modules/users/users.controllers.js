@@ -56,6 +56,10 @@ exports.getUser = async (req, res) => {
   }
 };
 
+exports.updatePass = async (req, res) => {
+  
+}
+
 exports.updateUser = async (req, res) => {
   try {
     const errors = validationResult(req);
