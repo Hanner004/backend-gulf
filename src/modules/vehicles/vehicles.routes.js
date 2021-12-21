@@ -22,6 +22,6 @@ router.get("/users/:idUser", isAuth, getVehicles); //consultar vehículos del us
 router.get("/users/numDoc/:numDoc", isAuth, getVehiclesByNumDoc); //consultar vehículos otros usuarios por número de documento
 router.put("/:idVehicle/users/:idUser", isAuth, validateVehicle, updateVehicle); //editar vehículo
 router.delete("/:idVehicle/users/:idUser", isAuth, removeVehicle); //eliminar vehículo
-router.post("/:idVehicle/tank", isAuth, tankVehicle); //tanquear vehículo
+router.post("/:idVehicle/tank/users/:idUser", isAuth, tankVehicle); //tanquear vehículo
 
 module.exports = router;

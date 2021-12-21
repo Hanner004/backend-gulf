@@ -194,7 +194,7 @@ exports.rechargeUser = async (req, res) => {
         );
         user.wallet.history.push({
           action: "Recarga de saldo",
-          value: req.body.money,
+          value: parseInt(req.body.money),
           date: new Date(),
         });
         await user.save();

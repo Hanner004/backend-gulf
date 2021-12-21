@@ -1,6 +1,8 @@
 const { validationResult } = require("express-validator");
 const User = require("../users/models/User");
 const Vehicle = require("./models/Vehicle");
+const Gasoline = require("../gasoline/models/Gasoline");
+const Price = require("../price/models/Prices");
 
 exports.createVehicle = async (req, res) => {
   try {
@@ -166,22 +168,68 @@ exports.removeVehicle = async (req, res) => {
 
 exports.tankVehicle = async (req, res) => {
   try {
-    const { idVehicle } = req.params;
+    const { idVehicle, idUser } = req.params;
     const { type, gallons } = req.body;
-    const vehicle = await Vehicle.findById({ _id: idVehicle });
-    if (vehicle) {
-      vehicle.tank = {
-        type,
-        gallons,
-      };
-      await vehicle.save();
-      return res.status(200).json({
-        msg: "Vehículo tanqueado",
-        data: vehicle,
-      });
+
+    const user = await User.findById({ _id: idUser });
+
+    if (user) {
+      const gasoline = await Gasoline.findOne({ type });
+      if (gasoline) {
+        if (gasoline.stock > 0 && gasoline.status === "Disponible") {
+          const price = await Price.findOne();
+          let total = 0;
+          switch (type) {
+            case "Corriente":
+              total = price.amountCurrent * gallons;
+              break;
+            case "Extra":
+              total = price.amountExtra * gallons;
+              break;
+          }
+          if (user.wallet.money < total) {
+            return res.status(404).json({
+              errors: [{ msg: "El usuario no tiene el dinero suficiente" }],
+            });
+          } else {
+            const vehicle = await Vehicle.findById({ _id: idVehicle });
+            if (vehicle) {
+              vehicle.tank = {
+                type,
+                gallons,
+              };
+              user.wallet.money = user.wallet.money - total;
+              user.wallet.history.push({
+                action: "Tanquear vehículo",
+                value: parseInt(total),
+                date: new Date(),
+              });
+              gasoline.stock = gasoline.stock - gallons;
+              await vehicle.save();
+              await user.save();
+              await gasoline.save();
+              return res.status(200).json({
+                errors: [{ msg: "Vehículo tanqueado correctamente" }],
+              });
+            } else {
+              return res.status(404).json({
+                errors: [{ msg: "El vehículo no se encuentra registrado" }],
+              });
+            }
+          }
+        } else {
+          return res.status(404).json({
+            errors: [{ msg: `No hay stock de la gasolina ${type}` }],
+          });
+        }
+      } else {
+        return res.status(404).json({
+          errors: [{ msg: "No hay gasolina registrada" }],
+        });
+      }
     } else {
       return res.status(404).json({
-        errors: [{ msg: "El vehículo no se encuentra registrado" }],
+        errors: [{ msg: "El usuario no se encuentra registrado" }],
       });
     }
   } catch (error) {
