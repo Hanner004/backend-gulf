@@ -122,9 +122,19 @@ validateRecharge = [
     .withMessage("El dinero no es válido"),
 ];
 
+validateUpdatePass = [
+  body("password")
+    .not()
+    .isEmpty()
+    .withMessage("La contraseña es requerida")
+    .isLength({ min: 5 })
+    .withMessage("La longitud de la contraseña debe ser superior o igual a 5"),
+];
+
 module.exports = {
   validateCreate,
   validateUpdate,
   validateStatus,
   validateRecharge,
+  validateUpdatePass
 };

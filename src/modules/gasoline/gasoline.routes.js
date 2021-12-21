@@ -1,10 +1,12 @@
 const { Router } = require("express");
 
 const isAuth = require("../../middlewares/isAuth");
-const { addTypeGasoline,
-        getAllGasoline, 
-        getGasolineByType, 
-        updateStockGasoline} = require("./gasoline.controllers");
+const {
+  addTypeGasoline,
+  getAllGasoline,
+  getGasolineByType,
+  updateStockGasoline,
+} = require("./gasoline.controllers");
 
 const router = Router();
 
