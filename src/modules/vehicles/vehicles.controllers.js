@@ -200,7 +200,7 @@ exports.tankVehicle = async (req, res) => {
               };
               user.wallet.money = user.wallet.money - total;
               user.wallet.history.push({
-                action: "Tanquear vehículo",
+                action: `Tanquear vehículo (${vehicle.model} ${vehicle.placa})`,
                 value: parseInt(total),
                 date: new Date(),
               });
