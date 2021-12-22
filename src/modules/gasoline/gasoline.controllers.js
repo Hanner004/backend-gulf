@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator");
-var moment = require('moment');
+const moment = require('moment');
 const Gasoline = require("./models/Gasoline");
 const Prices = require("../price/models/Prices")
 
@@ -25,6 +25,15 @@ exports.addTypeGasoline = async (req, res) => {
   }
 };
 
+addGasolineDefault = async () =>{
+  await Gasoline.insertMany(
+    [
+      { "type": "Corriente" },
+      { "type": "Extra" }
+    ]);
+  return this.getAllGasoline();
+}
+
 getPricesNow = async () => {
   const date = moment().format('YYYY[-]MM[-]DD');  
   return await Prices.findOne(
@@ -42,7 +51,8 @@ exports.getAllGasoline = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   } else {
-    const gasoline = await Gasoline.find();
+    var gasoline = await Gasoline.find().count();
+    gasoline===0 ? addGasolineDefault() :  gasoline = await Gasoline.find()
     if (gasoline) {
       const price = await getPricesNow();
       gasoline.map((gasol) => { 
@@ -56,6 +66,7 @@ exports.getAllGasoline = async (req, res) => {
         data: gasoline,
       });
     } else {
+      console.log("No hay")
       return res.status(404).json({
         errors: [{ msg: "No existen registros de tipos de gasolina" }],
       });
@@ -70,8 +81,8 @@ exports.getGasolineByType = async (req, res) => {
   } else {
     const { type } = req.params;
     const gasoline = await Gasoline.findOne({ type });
-    if (gasoline) {
-      const price = await getPricesNow(Date(Date.now()));
+    if (!gasoline.isEmpty()) {
+      const price = await getPricesNow();
       if (gasoline.type === "Corriente" && price){
         gasoline.price = price.amountCurrent;
       } else if (gasoline.type === "Extra" && price)

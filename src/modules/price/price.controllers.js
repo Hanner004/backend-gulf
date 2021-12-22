@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const moment = require('moment');
 const Prices = require("./models/Prices")
 
 checkDateRange = async (initialDate, endDate) => {
@@ -17,12 +18,17 @@ exports.addSalePriceGasoline = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   } else {
-    const { initialDate, endDate } = req.body;
-    if (initialDate > Date(Date.now()) || endDate > Date(Date.now())){
+    var { initialDate, endDate } = req.body;
+    const hoy = moment().format('YYYY[-]MM[-]DD');  
+    if (!moment(initialDate, ["DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY"], true).isValid() || !moment(endDate, ["DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY"], true).isValid()){
+      return res.status(400).json({
+        errors: [{ msg: "El formato de las fechas no es válido" }],
+      });
+    } else if (moment(initialDate).format('YYYY[-]MM[-]DD') < hoy || moment(endDate).format('YYYY[-]MM[-]DD')< hoy ){
       return res.status(400).json({
         errors: [{ msg: "No se puede establecer precios a fechas inferiores a la actual" }],
       });
-    } else if (initialDate > endDate ){
+    } else if (moment(initialDate).format('YYYY[-]MM[-]DD') > moment(endDate).format('YYYY[-]MM[-]DD') ){
       return res.status(400).json({
         errors: [{ msg: "Verifique el Rango, la fecha final no puede ser inferior a la inicial" }],
       });
@@ -67,6 +73,10 @@ exports.getPriceByDate = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
+  } else if (!moment(req.params.date, ["DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY"], true).isValid()){
+    return res.status(400).json({
+      errors: [{ msg: "El formato de la fecha no es válido" }],
+    });
   } else {
     const { date } = req.params;
     const price = await Prices.findOne(
@@ -97,14 +107,19 @@ exports.updateSalePriceGasoline = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     } else {
       const { initialDate, endDate } = req.body;
-      if (initialDate > Date(Date.now()) || endDate > Date(Date.now())){
-        return res.status(400).json({
-          errors: [{ msg: "No se puede establecer precios a fechas inferiores a la actual" }],
-        });
-      } else if (initialDate > endDate ){
-        return res.status(400).json({
-          errors: [{ msg: "Verifique el Rango, la fecha final no puede ser inferior a la inicial" }],
-        });
+      const hoy = moment().format('YYYY[-]MM[-]DD');  
+    if (!moment(initialDate, ["DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY"], true).isValid() || !moment(endDate, ["DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY"], true).isValid()){
+      return res.status(400).json({
+        errors: [{ msg: "El formato de las fechas no es válido" }],
+      });
+    } else if (moment(initialDate).format('YYYY[-]MM[-]DD') < hoy || moment(endDate).format('YYYY[-]MM[-]DD')< hoy ){
+      return res.status(400).json({
+        errors: [{ msg: "No se puede establecer precios a fechas inferiores a la actual" }],
+      });
+    } else if (moment(initialDate).format('YYYY[-]MM[-]DD') > moment(endDate).format('YYYY[-]MM[-]DD') ){
+      return res.status(400).json({
+        errors: [{ msg: "Verifique el Rango, la fecha final no puede ser inferior a la inicial" }],
+      });
       } else {
         const { idRange } = req.params;
         const checkRange = await Prices.find(
@@ -119,7 +134,6 @@ exports.updateSalePriceGasoline = async (req, res) => {
         ).count();
         if(checkRange === 0){
           const range = await Prices.findById({ _id: idRange });
-          console.log(range)
           if (range) {
             await Prices.updateOne({ _id: idRange }, { $set: req.body });
             return res.status(200).json({
