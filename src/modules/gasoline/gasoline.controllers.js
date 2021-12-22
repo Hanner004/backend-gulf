@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+var moment = require('moment');
 const Gasoline = require("./models/Gasoline");
 const Prices = require("../price/models/Prices")
 
@@ -24,7 +25,8 @@ exports.addTypeGasoline = async (req, res) => {
   }
 };
 
-getPricesNow = async (date) => {
+getPricesNow = async () => {
+  const date = moment().format('YYYY[-]MM[-]DD');  
   return await Prices.findOne(
     { $and:
       [
@@ -42,7 +44,7 @@ exports.getAllGasoline = async (req, res) => {
   } else {
     const gasoline = await Gasoline.find();
     if (gasoline) {
-      const price = await getPricesNow(Date(Date.now()));
+      const price = await getPricesNow();
       gasoline.map((gasol) => { 
         if (gasol.type === "Corriente" && price){
           gasol.price = price.amountCurrent;
