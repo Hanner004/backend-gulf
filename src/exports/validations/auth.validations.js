@@ -6,7 +6,9 @@ validateRegister = [
     .isEmpty()
     .withMessage("El tipo de documento es requerido")
     .isString()
-    .withMessage("El tipo de documento no es válido"),
+    .withMessage("El tipo de documento no es válido")
+    .isIn(["CC", "TI", "CE"])
+    .withMessage("El tipo de documento es incorrecto"),
 
   body("numDoc")
     .not()
@@ -42,6 +44,13 @@ validateRegister = [
     .withMessage("La contraseña es requerida")
     .isLength({ min: 5 })
     .withMessage("La longitud de la contraseña debe ser superior o igual a 5"),
+
+  body("phone")
+    .not()
+    .isEmpty()
+    .withMessage("El teléfono es requerido")
+    .isNumeric()
+    .withMessage("El teléfono no es válido"),
 ];
 
 validateLogin = [

@@ -26,14 +26,29 @@ const userSchema = Schema(
       type: String,
       required: true,
     },
+    phone: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: Boolean,
       default: true,
     },
+    role: {
+      type: String,
+      require: true,
+    },
+    wallet: {
+      money: {
+        type: Number,
+        default: 0,
+      },
+      history: [],
+    },
+    vehicles_id: [],
   },
   {
     timestamps: true,
-    versionKey: false,
   }
 );
 
